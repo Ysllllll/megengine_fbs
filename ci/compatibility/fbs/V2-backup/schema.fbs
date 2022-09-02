@@ -1,0 +1,170 @@
+include "dtype.fbs";
+include "opr_param_defs.fbs";
+include "mgb_opr_param_defs.fbs";
+include "mgb_cpp_opr.fbs";
+
+namespace mgb.serialization.fbs;
+
+file_identifier "mgb1";
+
+table CompNode {
+    logical_locator:string;
+}
+
+table Tensor {
+    name:string;
+    shape:[uint];
+    comp_node:CompNode;
+    dtype:DType;
+    /// Size of the out of band tensor value blob.
+    data_size:uint;
+    /// Skip `offset` bytes before feeding data to value loader.
+    offset:uint = 0;
+}
+
+/// Opaque byte buffer defined by operator implementation
+table Blob {
+    data:[ubyte] (required);
+}
+
+table Reserved0 {}
+table DeprecatedParam {}
+
+union OperatorParam {
+    mgb.serialization.fbs.param.Empty = 1,
+    mgb.serialization.fbs.param.Axis = 2,
+    mgb.serialization.fbs.param.Convolution = 3,
+    mgb.serialization.fbs.param.MaskPropagate = 4,
+    mgb.serialization.fbs.param.ConvPooling = 5,
+    mgb.serialization.fbs.param.ConvBias = 6,
+    mgb.serialization.fbs.param.SeparableConv = 7,
+    mgb.serialization.fbs.param.Images2Neibs = 8,
+    mgb.serialization.fbs.param.Pooling = 9,
+    mgb.serialization.fbs.param.LRN = 10,
+    mgb.serialization.fbs.param.BN = 11,
+    mgb.serialization.fbs.param.ROIPooling = 12,
+    mgb.serialization.fbs.param.WarpPerspective = 13,
+    mgb.serialization.fbs.param.SpatialTfGridGenerator = 14,
+    mgb.serialization.fbs.param.SpatialTfSampler = 15,
+    mgb.serialization.fbs.param.MGBAddUpdate = 16,
+    mgb.serialization.fbs.param.Elemwise = 17,
+    mgb.serialization.fbs.param.ElemwiseMultiType = 18,
+    mgb.serialization.fbs.param.PowC = 19,
+    mgb.serialization.fbs.param.MatrixMul = 20,
+    //Reserved for param.Winograd = 21,
+    mgb.serialization.fbs.DeprecatedParam = 21,
+    mgb.serialization.fbs.param.SVD = 22,
+    mgb.serialization.fbs.param.Reduce = 23,
+    mgb.serialization.fbs.param.Cumsum = 24,
+    mgb.serialization.fbs.param.CondTake = 25,
+    mgb.serialization.fbs.param.Argsort = 26,
+    mgb.serialization.fbs.param.IndexingRemap = 27,
+    mgb.serialization.fbs.param.MGBSleep = 28,
+    mgb.serialization.fbs.param.Linspace = 29,
+    mgb.serialization.fbs.param.LinspaceFull = 30,
+    mgb.serialization.fbs.param.Eye = 31,
+    mgb.serialization.fbs.param.UniformRNG = 32,
+    mgb.serialization.fbs.param.GaussianRNG = 33,
+    mgb.serialization.fbs.param.Flip = 34,
+    mgb.serialization.fbs.param.Rotate = 35,
+    mgb.serialization.fbs.param.ROICopy = 36,
+    mgb.serialization.fbs.param.CvtColor = 37,
+    mgb.serialization.fbs.param.WarpAffine = 38,
+    mgb.serialization.fbs.param.GaussianBlur = 39,
+    mgb.serialization.fbs.param.Resize = 40,
+    mgb.serialization.fbs.param.Convolution3D = 41,
+    mgb.serialization.fbs.param.Conv3DBias = 42,
+    mgb.serialization.fbs.param.SeparableConv3D = 43,
+    mgb.serialization.fbs.param.TopK = 44,
+    mgb.serialization.fbs.param.RelayoutFormat = 45,
+    mgb.serialization.fbs.param.SeparableFilter = 46,
+    mgb.serialization.fbs.param.LocalShare = 47,
+    mgb.serialization.fbs.param.ROIAlign = 48,
+    mgb.serialization.fbs.param.DeformablePSROIPooling = 49,
+    mgb.serialization.fbs.param.BatchConvBias = 50,
+    mgb.serialization.fbs.param.DType = 51,
+    mgb.serialization.fbs.param.PersistentOutputStorage = 52,
+    mgb.serialization.fbs.param.OptionalAxis = 53,
+    mgb.serialization.fbs.param.OptionalAxisV1 = 54,
+    mgb.serialization.fbs.param.ExecutionPolicy = 55,
+    mgb.serialization.fbs.param.AssertEqual = 56,
+    mgb.serialization.fbs.param.FpgaConv = 57,
+    mgb.serialization.fbs.param.CollectiveComm = 58,
+    mgb.serialization.fbs.param.CondExecPred = 59,
+    mgb.serialization.fbs.param.CondExecPredLogical = 60,
+    mgb.serialization.fbs.param.CondExecMark = 61,
+    mgb.serialization.fbs.param.CondExecMerge = 62,
+    mgb.serialization.fbs.param.Host2DeviceCopy = 63,
+    mgb.serialization.fbs.param.Dimshuffle = 64,
+    mgb.serialization.fbs.param.AxisAddRemove = 65,
+    mgb.serialization.fbs.param.IndexDescMaskDump = 66,
+    mgb.serialization.fbs.DType = 67,
+    mgb.serialization.fbs.param.Remap = 68,
+    mgb.serialization.fbs.param.NMSKeep = 69,
+    mgb.serialization.fbs.param.AdaptivePooling = 70,
+    mgb.serialization.fbs.param.NvOf = 71,
+    mgb.serialization.fbs.param.DctChannelSelect = 72,
+    mgb.serialization.fbs.param.FakeQuant = 73,
+    mgb.serialization.fbs.param.TQT = 74,
+    mgb.serialization.fbs.param.Correlation = 75,
+    mgb.serialization.fbs.param.LSQ = 76,
+    mgb.serialization.fbs.param.GammaRNG = 77,
+    mgb.serialization.fbs.param.PoissonRNG = 78,
+    mgb.serialization.fbs.param.PermutationRNG = 79,
+    mgb.serialization.fbs.param.BetaRNG = 80,
+    mgb.serialization.fbs.param.SlidingWindowTranspose = 81,
+    mgb.serialization.fbs.param.Padding = 82,
+    mgb.serialization.fbs.param.ShuffleRNG = 83,
+    mgb.serialization.fbs.param.CheckNonFinite = 84,
+    mgb.serialization.fbs.param.LayerNorm = 85,
+    mgb.serialization.fbs.param.Dropout = 86,
+    mgb.serialization.fbs.param.RNNCell = 87,
+    mgb.serialization.fbs.param.RNN = 88,
+    mgb.serialization.fbs.param.LSTM = 89,
+    mgb.serialization.fbs.param.Softmax = 90,
+    mgb.serialization.fbs.param.Diag = 91,
+}
+
+table Operator {
+    type_id:ulong;
+    /// Operator parameter
+    param:OperatorParam;
+    /// ID of the input variable
+    inputs:[uint];
+    comp_node:[CompNode];
+    output_name:[string];
+    output_dtype:DType;
+    tensors:[Tensor];
+    priority:int = 0;
+
+    /// Operator may want to save big, opaque byte buffers.
+    blobs:[Blob];
+    /// Operator may want to save more than one OperatorParam
+    additional_params:[OperatorParam];
+    name:string;
+}
+
+table Metadata {
+    is_valid:bool;
+    graph_modified:bool;
+    user_info:string;
+    optimize_options:ulong;
+}
+
+struct OutputVar {
+    compact_id:uint;
+    original_id:uint;
+}
+
+table Graph {
+    mgb_version:uint;
+    /// Hash of the graph computed in unspecified way. May be used as graph
+    /// identifier.
+    hash:ulong;
+    nr_shared_tensor:uint;
+    oprs:[Operator];
+    output_vars_idx:[OutputVar];
+    metadata:Metadata;
+}
+
+root_type Graph;
